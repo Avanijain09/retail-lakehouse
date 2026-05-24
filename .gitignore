@@ -1,0 +1,17 @@
+venv/
+.env
+
+__pycache__/
+*.py[cod]
+
+.ipynb_checkpoints/
+
+data/raw/
+data/bronze/
+data/silver/
+data/gold/
+
+.vscode/*
+!.vscode/settings.json
+
+.DS_Store

@@ -43,6 +43,7 @@ from pyspark.sql.functions import (
     unix_timestamp,
     when,
 )
+from pyspark.sql.functions import coalesce
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from utils.config import DATABASE_URL, GOLD_PATH, SILVER_PATH
@@ -261,7 +262,7 @@ def aggregate_kpis(
         F_round(avg("_delivery_days"), 2).alias("avg_delivery_days"),
         F_round(avg("_estimated_days"), 2).alias("avg_estimated_days"),
         # ── On-time delivery ──────────────────────────────
-        F_sum("_is_on_time").alias("on_time_count"),
+        coalesce(F_sum("_is_on_time"), lit(0)).alias("on_time_count"),
     )
 
     # Derived rate metrics — guarded against division by zero

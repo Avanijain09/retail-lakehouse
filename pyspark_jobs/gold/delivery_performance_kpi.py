@@ -37,6 +37,7 @@ from pyspark.sql.functions import (
     to_date,
     when,
 )
+from pyspark.sql.functions import coalesce
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from utils.config import DATABASE_URL, GOLD_PATH, SILVER_PATH
@@ -185,7 +186,7 @@ def aggregate_kpis(
         countDistinct("order_id").alias("total_orders"),
         F_sum("_is_delivered").alias("delivered_orders"),
         F_sum("_is_canceled").alias("cancelled_orders"),
-        F_sum("_is_on_time").alias("on_time_orders"),
+        coalesce(F_sum("_is_on_time"), lit(0)).alias("on_time_orders"),
         F_round(avg("_delivery_days"), 2).alias("avg_delivery_days"),
         F_round(avg("_estimated_days"), 2).alias("avg_estimated_days"),
         F_round(avg("_delay_days"), 2).alias("avg_delay_days"),

@@ -33,6 +33,7 @@ from pyspark.sql.functions import (
     countDistinct,
     date_format,
     lit,
+    coalesce,
     round as F_round,
     sum as F_sum,
     to_date,
@@ -127,7 +128,9 @@ def build_filtered_fact(
         on="product_id",
         how="left",
     )
-
+    fact = fact.withColumn(
+        "product_category_name", coalesce(col("product_category_name"), lit("unknown"))
+    )
     # purchase_month for grouping
     # Verified: order_purchase_timestamp exists in clean_orders.py (Olist)
     fact = fact.withColumn(
